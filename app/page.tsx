@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import AdminDashboard from "@/components/admin/AdminDashboard";
 import CustomerDashboard from "@/components/customer/CustomerDashboard";
 
-const API_BASE_URL = "https://freshmart-grocery-shop-be-959644206209.europe-west1.run.app/api";
+const API_BASE_URL = "http://localhost:8080/api";
 
 export default function HomePage() {
   const [user, setUser] = useState<any>(null);

@@ -13,7 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Plus, Edit, Trash2, Package, ShoppingBag, Bell, Users } from "lucide-react";
 import { toast } from "sonner";
 
-const API_BASE_URL = "https://freshmart-grocery-shop-be-959644206209.europe-west1.run.app/api";
+const API_BASE_URL = "http://localhost:8080/api";
 
 interface Category {
   id: string;
