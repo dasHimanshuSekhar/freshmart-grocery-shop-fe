@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "default": "grocery-shop-336e0",
+    "staging": "grocery-shop-336e0"
+  },
+  "targets": {},
+  "etags": {}
+}
