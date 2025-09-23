@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ShoppingCart, Package, Search, Plus, Minus, Star, Clock, CheckCircle, Truck } from "lucide-react";
 import { toast } from "sonner";
 
-const API_BASE_URL = "http://localhost:8080/api";
+const API_BASE_URL = "https://freshmart-grocery-shop-be-959644206209.europe-west1.run.app/";
 
 interface User {
   userId: string;
