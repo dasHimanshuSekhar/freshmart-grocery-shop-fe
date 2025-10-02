@@ -13,7 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Plus, Edit, Trash2, Package, ShoppingBag, Bell, Users } from "lucide-react";
 import { toast } from "sonner";
 
-const API_BASE_URL = "https://freshmart-grocery-shop-be-959644206209.europe-west1.run.app/";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL as string;
 
 interface Category {
   id: string;
@@ -76,7 +76,15 @@ export default function AdminDashboard() {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/categories`);
+      const response = await fetch(`${API_BASE_URL}/categories`,
+        {
+          method: "GET",
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("secret-token") || ""}`
+          },
+        }
+      );
       const data = await response.json();
       if (data.success) {
         setCategories(data.data);
@@ -88,7 +96,15 @@ export default function AdminDashboard() {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/products`);
+      const response = await fetch(`${API_BASE_URL}/products`,
+        {
+          method: "GET",
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("secret-token") || ""}`
+          },
+        }
+      );
       const data = await response.json();
       if (data.success) {
         setProducts(data.data);
@@ -100,7 +116,15 @@ export default function AdminDashboard() {
 
   const fetchOrders = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/orders`);
+      const response = await fetch(`${API_BASE_URL}/orders`,
+        {
+          method: "GET",
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("secret-token") || ""}`
+          },
+        }
+      );
       const data = await response.json();
       if (data.success) {
         setOrders(data.data);
@@ -120,7 +144,10 @@ export default function AdminDashboard() {
     try {
       const response = await fetch(`${API_BASE_URL}/categories`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("secret-token") || ""}`
+        },
         body: JSON.stringify(categoryForm),
       });
 
@@ -155,9 +182,11 @@ export default function AdminDashboard() {
 
       const response = await fetch(`${API_BASE_URL}/products`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("secret-token") || ""}`,
         body: JSON.stringify(productData),
-      });
+      }});
 
       const data = await response.json();
       if (data.success) {
@@ -181,9 +210,13 @@ export default function AdminDashboard() {
     try {
       const response = await fetch(`${API_BASE_URL}/orders/${orderId}/status`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("secret-token") || ""
+          }`,
         body: JSON.stringify({ status, deliveryTime }),
-      });
+      }
+    });
 
       const data = await response.json();
       if (data.success) {
@@ -206,6 +239,10 @@ export default function AdminDashboard() {
     try {
       const response = await fetch(`${API_BASE_URL}/products/${productId}`, {
         method: "DELETE",
+        headers: { 
+          "Content-Type": "application",
+          "Authorization": `Bearer ${localStorage.getItem("secret-token") || ""}`
+        }
       });
 
       const data = await response.json();

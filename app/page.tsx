@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import AdminDashboard from "@/components/admin/AdminDashboard";
 import CustomerDashboard from "@/components/customer/CustomerDashboard";
 
-const API_BASE_URL = "https://freshmart-grocery-shop-be-959644206209.europe-west1.run.app/";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL as string;
 
 export default function HomePage() {
   const [user, setUser] = useState<any>(null);
@@ -34,8 +34,8 @@ export default function HomePage() {
   }, []);
 
   const sendOTP = async () => {
-    if (!email) {
-      toast.error("Please enter your email");
+    if (!phone) {
+      toast.error("Please enter your phone number");
       return;
     }
 
@@ -44,7 +44,7 @@ export default function HomePage() {
       const response = await fetch(`${API_BASE_URL}/auth/send-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ phone }),
       });
 
       const data = await response.json();
@@ -73,7 +73,7 @@ export default function HomePage() {
       const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, name, phone, otp }),
+        body: JSON.stringify({ phone, name, email, otp }),
       });
 
       const data = await response.json();
@@ -92,8 +92,8 @@ export default function HomePage() {
   };
 
   const handleLogin = async () => {
-    if (!email || !otp) {
-      toast.error("Please enter email and OTP");
+    if (!phone || !otp) {
+      toast.error("Please enter phone number and OTP");
       return;
     }
 
@@ -102,13 +102,14 @@ export default function HomePage() {
       const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, otp }),
+        body: JSON.stringify({ phone, otp }),
       });
 
       const data = await response.json();
       if (data.success) {
         setUser(data.data);
         localStorage.setItem("user", JSON.stringify(data.data));
+        localStorage.setItem("secret-token", data.data.token);
         toast.success("Login successful!");
       } else {
         toast.error(data.message);
@@ -188,15 +189,15 @@ export default function HomePage() {
 
               <TabsContent value="login" className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="login-email">Email</Label>
+                  <Label htmlFor="login-phone">Phone Number</Label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                    <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                     <Input
-                      id="login-email"
-                      type="email"
-                      placeholder="Enter your email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      id="login-phone"
+                      type="tel"
+                      placeholder="Enter your phone number"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
                       className="pl-10"
                     />
                   </div>
@@ -232,15 +233,15 @@ export default function HomePage() {
 
               <TabsContent value="register" className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="register-email">Email</Label>
+                  <Label htmlFor="register-phone">Phone Number</Label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                    <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                     <Input
-                      id="register-email"
-                      type="email"
-                      placeholder="Enter your email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      id="register-phone"
+                      type="tel"
+                      placeholder="Enter your phone number"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
                       className="pl-10"
                     />
                   </div>
@@ -262,19 +263,20 @@ export default function HomePage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="register-phone">Phone Number</Label>
+                  <Label htmlFor="register-email">Email</Label>
                   <div className="relative">
-                    <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                    <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                     <Input
-                      id="register-phone"
-                      type="tel"
-                      placeholder="Enter your phone number"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
+                      id="register-email"
+                      type="email"
+                      placeholder="Enter your email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       className="pl-10"
                     />
                   </div>
                 </div>
+
 
                 {!otpSent ? (
                   <Button onClick={sendOTP} disabled={loading} className="w-full">

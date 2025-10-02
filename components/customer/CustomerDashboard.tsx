@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ShoppingCart, Package, Search, Plus, Minus, Star, Clock, CheckCircle, Truck } from "lucide-react";
 import { toast } from "sonner";
 
-const API_BASE_URL = "https://freshmart-grocery-shop-be-959644206209.europe-west1.run.app/";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL as string;
 
 interface User {
   userId: string;
@@ -92,7 +92,14 @@ export default function CustomerDashboard({ user }: CustomerDashboardProps) {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/categories`);
+      const response = await fetch(`${API_BASE_URL}/categories`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application",
+          "Authorization": `Bearer ${localStorage.getItem("secret-token") || ""}`
+        },
+      }
+      );
       const data = await response.json();
       if (data.success) {
         setCategories(data.data);
@@ -106,15 +113,21 @@ export default function CustomerDashboard({ user }: CustomerDashboardProps) {
     try {
       let url = `${API_BASE_URL}/products`;
       const params = new URLSearchParams();
-      
+
       if (selectedCategory) params.append("categoryId", selectedCategory);
       if (searchQuery) params.append("search", searchQuery);
-      
+
       if (params.toString()) {
         url += `?${params.toString()}`;
       }
 
-      const response = await fetch(url);
+      const response = await fetch(url,{
+        method: "GET",
+        headers: {
+          "Content-Type": "application",
+          "Authorization": `Bearer ${localStorage.getItem("secret-token") || ""}`
+        },
+      });
       const data = await response.json();
       if (data.success) {
         setProducts(data.data);
@@ -126,7 +139,14 @@ export default function CustomerDashboard({ user }: CustomerDashboardProps) {
 
   const fetchOrders = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/orders/customer/${user.userId}`);
+      const response = await fetch(`${API_BASE_URL}/orders/customer/${user.userId}`,
+        {
+        method: "GET",
+        headers: {
+          "Content-Type": "application",
+          "Authorization": `Bearer ${localStorage.getItem("secret-token") || ""}`
+        }
+    });
       const data = await response.json();
       if (data.success) {
         setOrders(data.data);
@@ -203,9 +223,13 @@ export default function CustomerDashboard({ user }: CustomerDashboardProps) {
         totalAmount: getTotalAmount()
       };
 
-      const response = await fetch(`${API_BASE_URL}/orders`, {
+      const response = await fetch(`${API_BASE_URL}/orders`, 
+        {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("secret-token") || ""}`,
+        },
         body: JSON.stringify(orderData),
       });
 
@@ -298,9 +322,8 @@ export default function CustomerDashboard({ user }: CustomerDashboardProps) {
             {categories.map((category) => (
               <Card
                 key={category.id}
-                className={`cursor-pointer transition-all hover:shadow-md ${
-                  selectedCategory === category.id ? "ring-2 ring-green-500" : ""
-                }`}
+                className={`cursor-pointer transition-all hover:shadow-md ${selectedCategory === category.id ? "ring-2 ring-green-500" : ""
+                  }`}
                 onClick={() => setSelectedCategory(selectedCategory === category.id ? "" : category.id)}
               >
                 <CardContent className="p-4 text-center">
@@ -412,7 +435,7 @@ export default function CustomerDashboard({ user }: CustomerDashboardProps) {
                       </div>
                     </div>
                   ))}
-                  
+
                   <div className="border-t pt-4">
                     <div className="flex justify-between items-center text-lg font-semibold">
                       <span>Total: ₹{getTotalAmount()}</span>
@@ -457,7 +480,7 @@ export default function CustomerDashboard({ user }: CustomerDashboardProps) {
                           </div>
                         </Badge>
                       </div>
-                      
+
                       <div className="space-y-2 mb-3">
                         {order.items.map((item, index) => (
                           <div key={index} className="flex justify-between text-sm">
@@ -466,7 +489,7 @@ export default function CustomerDashboard({ user }: CustomerDashboardProps) {
                           </div>
                         ))}
                       </div>
-                      
+
                       <div className="flex justify-between items-center pt-2 border-t">
                         <span className="font-medium">Total: ₹{order.totalAmount}</span>
                         {order.deliveryTime && (

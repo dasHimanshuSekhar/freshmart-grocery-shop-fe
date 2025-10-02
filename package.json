@@ -4,8 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
+    "dev:stage": "env-cmd -f .env.stage next dev --turbopack",
     "build": "next build --no-lint",
+    "build:stage": "env-cmd -f .env.stage next build --no-lint",
     "start": "next start",
+    "start:stage": "env-cmd -f .env.stage next start",
     "lint": "eslint"
   },
   "dependencies": {
@@ -63,6 +66,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "env-cmd": "^11.0.0",
     "eslint": "^9",
     "eslint-config-next": "15.5.2",
     "tailwindcss": "^4",
