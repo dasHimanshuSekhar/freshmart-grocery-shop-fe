@@ -3,7 +3,7 @@ name: Deploy to Firebase Hosting (Staging)
 on:
   push:
     branches:
-      - staging  # workflow triggers on pushes to staging branch
+      - staging 
 
 jobs:
   build_and_deploy:
@@ -15,13 +15,19 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'  # required for Next.js
+          node-version: '20' 
 
       - name: Install dependencies
         run: npm install
 
+      # ➡️ FIX: Create the .env.stage file from GitHub Secrets
+      # This step writes the content of a secret into the file env-cmd is looking for.
+      - name: Create .env.stage from Secret
+        run: echo "${{ secrets.STAGING_ENV_FILE_CONTENT }}" > .env.stage
+        # The runner will now find this file in the next step.
+
       - name: Build the app
-        run: npm run build:stage
+        run: npm run build:stage # This now executes: env-cmd -f .env.stage next build --no-lint
 
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
@@ -29,4 +35,3 @@ jobs:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}"
           channelId: staging
-
